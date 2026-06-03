@@ -1,4 +1,4 @@
-package src.model;
+package model;
 public class Lampu extends PerangkatElektronik {
       @Override
     public void nyalakan() {
