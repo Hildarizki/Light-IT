@@ -4,11 +4,14 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import dao.PerangkatDAO;
 import model.Lampu;
+import model.StopKontak;
 import model.Ruangan;
 
 public class Main extends Application {
@@ -16,160 +19,204 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
 
-        // ================= OOP =================
-        Ruangan ruangan = new Ruangan();
+        // ================= MODEL =================
+        PerangkatDAO dao = new PerangkatDAO();
 
-        Lampu lampu1 = new Lampu();
-        Lampu lampu2 = new Lampu();
+        Ruangan ruangTamu = new Ruangan("Ruang Tamu");
+        Ruangan kamarTidur = new Ruangan("Kamar Tidur");
 
-        ruangan.tambahPerangkat(lampu1);
-        ruangan.tambahPerangkat(lampu2);
+        Lampu lampuUtama = new Lampu("Lampu Utama");
+        Lampu lampuSudut = new Lampu("Lampu Sudut");
+        StopKontak tv = new StopKontak("TV");
+
+        Lampu lampuKamar = new Lampu("Lampu Kamar");
+        StopKontak charger = new StopKontak("Charger");
+
+        ruangTamu.tambahPerangkat(lampuUtama);
+        ruangTamu.tambahPerangkat(lampuSudut);
+        ruangTamu.tambahPerangkat(tv);
+
+        kamarTidur.tambahPerangkat(lampuKamar);
+        kamarTidur.tambahPerangkat(charger);
 
         // ================= ROOT =================
-        VBox root = new VBox(25);
+
+        VBox root = new VBox(20);
         root.setPadding(new Insets(20));
+        root.setAlignment(Pos.TOP_CENTER);
         root.getStyleClass().add("root");
 
         // ================= HEADER =================
-        HBox header = new HBox();
-        header.setAlignment(Pos.CENTER_LEFT);
-        header.getStyleClass().add("header");
 
-        Label brand = new Label("Light-IT");
-        brand.getStyleClass().add("label-title");
+        Label title = new Label("💡 Light-IT");
+        title.getStyleClass().add("title");
 
-        header.getChildren().add(brand);
+        Label subtitle = new Label("Smart Home Dashboard");
+        subtitle.getStyleClass().add("subtitle");
 
-        // ================= HERO =================
-        VBox hero = new VBox(10);
+        Label statusLabel = new Label("Semua perangkat OFF");
+        statusLabel.getStyleClass().add("status");
 
-        Label welcome = new Label("Welcome to Light-IT");
-        welcome.setStyle("-fx-text-fill: white; -fx-font-size: 28;");
+        // ================= RUANG TAMU =================
 
-        Label status = new Label("Devices Ready");
-        status.setStyle("-fx-text-fill: #cccccc;");
+        VBox ruangTamuCard = new VBox(12);
+        ruangTamuCard.getStyleClass().add("card");
 
-        Button turnOnBtn = new Button("Nyalakan Semua");
-        turnOnBtn.getStyleClass().add("primary-button");
-        turnOnBtn.setMaxWidth(Double.MAX_VALUE);
+        Label rtTitle = new Label("🏠 Ruang Tamu");
+        rtTitle.getStyleClass().add("card-title");
 
-        Button turnOffBtn = new Button("Matikan Semua");
-        turnOffBtn.getStyleClass().add("primary-button");
-        turnOffBtn.setMaxWidth(Double.MAX_VALUE);
+        Label rtInfo = new Label("2 Lampu • 1 Stop Kontak");
+        rtInfo.getStyleClass().add("card-info");
 
-        // ACTION BUTTON
-        turnOnBtn.setOnAction(e -> {
-            ruangan.nyalakanSemua();
-            status.setText("Semua perangkat ON");
+        Button btnRuangTamu = new Button("Nyalakan");
+        btnRuangTamu.getStyleClass().add("primary-button");
+
+        btnRuangTamu.setOnAction(e -> {
+
+            if (lampuUtama.isStatus()) {
+
+                ruangTamu.matikanSemua();
+                dao.updateStatus("Lampu Utama", false);
+                dao.updateStatus("Lampu Sudut", false);
+                dao.updateStatus("TV", false);
+
+                btnRuangTamu.setText("Nyalakan");
+                statusLabel.setText("Ruang Tamu OFF");
+
+            } else {
+
+                ruangTamu.nyalakanSemua();
+                dao.updateStatus("Lampu Utama", true);
+                dao.updateStatus("Lampu Sudut", true);
+                dao.updateStatus("TV", true);
+
+                btnRuangTamu.setText("Matikan");
+                statusLabel.setText("Ruang Tamu ON");
+            }
         });
 
-        turnOffBtn.setOnAction(e -> {
-            ruangan.matikanSemua();
-            status.setText("Semua perangkat OFF");
+        ruangTamuCard.getChildren().addAll(
+                rtTitle,
+                rtInfo,
+                btnRuangTamu
+        );
+
+        // ================= KAMAR TIDUR =================
+
+        VBox kamarCard = new VBox(12);
+        kamarCard.getStyleClass().add("card");
+
+        Label kamarTitle = new Label("🛏 Kamar Tidur");
+        kamarTitle.getStyleClass().add("card-title");
+
+        Label kamarInfo = new Label("1 Lampu • 1 Stop Kontak");
+        kamarInfo.getStyleClass().add("card-info");
+
+        Button btnKamar = new Button("Nyalakan");
+        btnKamar.getStyleClass().add("primary-button");
+
+        btnKamar.setOnAction(e -> {
+
+            if (lampuKamar.isStatus()) {
+
+                kamarTidur.matikanSemua();
+                dao.updateStatus("Lampu Kamar", false);
+                dao.updateStatus("Charger", false);
+
+                btnKamar.setText("Nyalakan");
+                statusLabel.setText("Kamar Tidur OFF");
+
+            } else {
+
+                kamarTidur.nyalakanSemua();
+                dao.updateStatus("Lampu Kamar", true);
+                dao.updateStatus("Charger", true);
+                btnKamar.setText("Matikan");
+                statusLabel.setText("Kamar Tidur ON");
+            }
         });
 
-        hero.getChildren().addAll(welcome, status, turnOnBtn, turnOffBtn);
+        kamarCard.getChildren().addAll(
+                kamarTitle,
+                kamarInfo,
+                btnKamar
+        );
 
-        // ================= ENERGY CARD =================
-        VBox energyCard = new VBox(10);
-        energyCard.getStyleClass().add("glass-card");
+        // ================= GLOBAL CONTROL =================
 
-        Label usageTitle = new Label("CURRENT USAGE");
-        usageTitle.setStyle("-fx-text-fill: #888; -fx-font-size: 12;");
+        VBox globalBox = new VBox(10);
+        globalBox.setAlignment(Pos.CENTER);
 
-        Label usageVal = new Label("1.2 kW");
-        usageVal.getStyleClass().add("label-usage");
+        Button nyalakanSemua =
+                new Button("⚡ Nyalakan Semua");
+        nyalakanSemua.getStyleClass().add("primary-button");
 
-        ProgressBar pb = new ProgressBar(0.65);
-        pb.setMaxWidth(Double.MAX_VALUE);
+        Button matikanSemua =
+                new Button("⛔ Matikan Semua");
+        matikanSemua.getStyleClass().add("danger-button");
 
-        energyCard.getChildren().addAll(usageTitle, usageVal, pb);
+        nyalakanSemua.setPrefWidth(220);
+        matikanSemua.setPrefWidth(220);
 
-        // ================= SMART DEVICES =================
-        VBox deviceSection = new VBox(15);
+        nyalakanSemua.setOnAction(e -> {
 
-        Label deviceTitle = new Label("Smart Devices");
-        deviceTitle.setStyle("-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;");
+            ruangTamu.nyalakanSemua();
+            kamarTidur.nyalakanSemua();
+            dao.updateStatus("Lampu Utama", true);
+            dao.updateStatus("Lampu Sudut", true);
+            dao.updateStatus("TV", true);
+            dao.updateStatus("Lampu Kamar", true);
+            dao.updateStatus("Charger", true);
 
-        HBox lampCard1 = createDeviceCard("Lampu 1", lampu1);
-        HBox lampCard2 = createDeviceCard("Lampu 2", lampu2);
+            btnRuangTamu.setText("Matikan");
+            btnKamar.setText("Matikan");
 
-        deviceSection.getChildren().addAll(deviceTitle, lampCard1, lampCard2);
+            statusLabel.setText("Semua perangkat ON");
+        });
 
-        // ================= ROOT ADD =================
-        root.getChildren().addAll(header, hero, energyCard, deviceSection);
+        matikanSemua.setOnAction(e -> {
 
-        // ================= SCROLL =================
-        ScrollPane scroll = new ScrollPane(root);
-        scroll.setFitToWidth(true);
-        scroll.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
-        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            ruangTamu.matikanSemua();
+            kamarTidur.matikanSemua();
+            dao.updateStatus("Lampu Utama", false);
+            dao.updateStatus("Lampu Sudut", false);
+            dao.updateStatus("TV", false);
+            dao.updateStatus("Lampu Kamar", false);
+            dao.updateStatus("Charger", false);
 
-        Scene scene = new Scene(scroll, 400, 700);
+            btnRuangTamu.setText("Nyalakan");
+            btnKamar.setText("Nyalakan");
 
-        // ================= CSS =================
+            statusLabel.setText("Semua perangkat OFF");
+        });
+
+        globalBox.getChildren().addAll(
+                nyalakanSemua,
+                matikanSemua
+        );
+
+        // ================= LAYOUT =================
+
+        root.getChildren().addAll(
+                title,
+                subtitle,
+                statusLabel,
+                ruangTamuCard,
+                kamarCard,
+                globalBox
+        );
+
+        Scene scene = new Scene(root, 500, 650);
+
         var css = getClass().getResource("/css/style.css");
+
         if (css != null) {
             scene.getStylesheets().add(css.toExternalForm());
         }
 
-        stage.setTitle("Light-IT Dashboard");
+        stage.setTitle("Light-IT");
         stage.setScene(scene);
         stage.show();
-    }
-
-    // ================= DEVICE CARD =================
-    private HBox createDeviceCard(String name, Lampu lampu) {
-
-        HBox card = new HBox(15);
-        card.setAlignment(Pos.CENTER_LEFT);
-        card.setStyle(
-            "-fx-background-color: rgba(255,255,255,0.08);" +
-            "-fx-padding: 15;" +
-            "-fx-background-radius: 20;"
-        );
-
-        Label title = new Label(name);
-        title.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
-
-        Label status = new Label("OFF");
-        status.setStyle("-fx-text-fill: #cccccc;");
-
-        VBox info = new VBox(5, title, status);
-
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        Button toggle = new Button("OFF");
-        toggle.setPrefWidth(60);
-
-        updateToggle(toggle, lampu.isStatus());
-
-        toggle.setOnAction(e -> {
-            if (lampu.isStatus()) {
-                lampu.matikan();
-            } else {
-                lampu.nyalakan();
-            }
-
-            updateToggle(toggle, lampu.isStatus());
-            status.setText(lampu.isStatus() ? "ON" : "OFF");
-        });
-
-        card.getChildren().addAll(info, spacer, toggle);
-
-        return card;
-    }
-
-    // ================= TOGGLE STYLE =================
-    private void updateToggle(Button btn, boolean isOn) {
-        if (isOn) {
-            btn.setText("ON");
-            btn.setStyle("-fx-background-color: #22C55E; -fx-text-fill: white;");
-        } else {
-            btn.setText("OFF");
-            btn.setStyle("-fx-background-color: #334155; -fx-text-fill: white;");
-        }
     }
 
     public static void main(String[] args) {

@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "TestConnection",
+      "request": "launch",
+      "mainClass": "database.TestConnection",
+      "projectName": "LIGHT IT_a40fbec0"
+    },
+    {
+      "type": "java",
       "name": "Run JavaFX",
       "request": "launch",
       "mainClass": "main.Main",

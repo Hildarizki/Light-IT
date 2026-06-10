@@ -1,8 +1,8 @@
 package model;
 
-public class Lampu extends PerangkatElektronik {
+public class StopKontak extends PerangkatElektronik {
 
-    public Lampu(String nama) {
+    public StopKontak(String nama) {
         this.nama = nama;
     }
 
