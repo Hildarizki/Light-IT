@@ -1,1 +1,1 @@
-halo, aku vincent dari profi informatika di Tel U purwokerto, disini saya bersama sodagar cina saya, Adrian Ernest Troy Rawung serta bersama dengan mamang taufik hafit apit kejepit. disini kami hanya menonton Hilda riski mengerjakan tubes ini
+halo, aku vincent dari prodi informatika di Tel U purwokerto, disini saya bersama sodagar cina saya, Adrian Ernest Troy Rawung serta bersama dengan mamang taufik hafit apit kejepit. disini kami hanya menonton Hilda riski mengerjakan tubes ini
