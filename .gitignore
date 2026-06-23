@@ -1,0 +1,22 @@
+# Compiled class file
+*.class
+bin/
+out/
+
+# Log file
+*.log
+
+# JavaFX SDK
+javafx-sdk/
+javafx.zip
+
+# VS Code
+.vscode/
+.project
+.classpath
+
+# Maven
+target/
+.mvn/
+maven/
+maven.zip
